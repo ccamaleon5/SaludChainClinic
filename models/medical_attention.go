@@ -15,20 +15,14 @@ import (
 // swagger:model MedicalAttention
 type MedicalAttention struct {
 
-	// Doctor's hexadecimal public key
-	DoctorPublicKey string `json:"doctorPublicKey,omitempty"`
-
-	// Doctor's Health Credential hash
-	HashHealthCredential string `json:"hashHealthCredential,omitempty"`
-
-	// Medical record about this medical appointment
-	MedicalRecord string `json:"medicalRecord,omitempty"`
-
 	// Patient's hexadecimal public key
-	PatientPublicKey string `json:"patientPublicKey,omitempty"`
+	MedicalAppointmentID string `json:"medicalAppointmentID,omitempty"`
 
-	// Recipe given by doctor to patient
-	Recipe string `json:"recipe,omitempty"`
+	// Doctor's PrivateKey
+	PublicKey string `json:"publicKey,omitempty"`
+
+	// Record Medical write by doctor
+	RecordMedical string `json:"recordMedical,omitempty"`
 }
 
 // Validate validates this medical attention

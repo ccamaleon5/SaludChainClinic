@@ -389,7 +389,7 @@ func getAccount(pubKey string){
 }
 
 //AttendPatient ...
-func AttendPatient(privKey string, medicalAppointmentID string, recordMedical string){
+func AttendPatient(privKey string, medicalAppointmentID string, recordMedical string) (string, error){
     var privateKey, _ = hex.DecodeString(privKey)
     publicKey := make([]byte, 32) 
     copy(publicKey, privateKey[32:])
@@ -422,4 +422,6 @@ func AttendPatient(privKey string, medicalAppointmentID string, recordMedical st
     }
 
     fmt.Println(result)   
+
+    return "exito", nil
 }

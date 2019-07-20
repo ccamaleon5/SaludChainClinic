@@ -715,32 +715,24 @@ func init() {
     "MedicalAttention": {
       "type": "object",
       "properties": {
-        "doctorPublicKey": {
-          "description": "Doctor's hexadecimal public key",
-          "type": "string"
-        },
-        "hashHealthCredential": {
-          "description": "Doctor's Health Credential hash",
-          "type": "string"
-        },
-        "medicalRecord": {
-          "description": "Medical record about this medical appointment",
-          "type": "string"
-        },
-        "patientPublicKey": {
+        "medicalAppointmentID": {
           "description": "Patient's hexadecimal public key",
           "type": "string"
         },
-        "recipe": {
-          "description": "Recipe given by doctor to patient",
+        "publicKey": {
+          "description": "Doctor's PrivateKey",
+          "type": "string"
+        },
+        "recordMedical": {
+          "description": "Record Medical write by doctor",
           "type": "string"
         }
       },
       "example": {
         "date": "2019-08-08T19:23:24Z",
-        "doctorPublicKey": "0xB986AB2343CDD332EE2345FA442776EFAA5663D567E5342FA3232A",
-        "hashCredential": "3c9f6UAYaIJsXUJDIM7lb2+tTW1ukkhnhwzDnC9h9Ksx2UtndRxAhoTyxPPGM",
-        "patientPublicKey": "0xA12543122BB32323AD233D232AEE233232FF87675E23AD23CB092"
+        "medicalAppointmentID": "23456FA",
+        "publicKey": "0xB986AB2343CDD332EE2345FA442776EFAA5663D567E5342FA3232A",
+        "recordMedical": "El paciente necesita descanso medico"
       }
     },
     "NewAppointmentSubject": {
@@ -764,10 +756,10 @@ func init() {
         }
       },
       "example": {
-        "date": "2019-08-08T19:23:24Z",
-        "doctorPublicKey": "0xB986AB2343CDD332EE2345FA442776EFAA5663D567E5342FA3232A",
-        "hashCredential": "3c9f6UAYaIJsXUJDIM7lb2+tTW1ukkhnhwzDnC9h9Ksx2UtndRxAhoTyxPPGM",
-        "patientPublicKey": "0xA12543122BB32323AD233D232AEE233232FF87675E23AD23CB092"
+        "comments": "Me duele la cabeza y dolores de estómago",
+        "doctorId": "344BA23F",
+        "patientId": "1F2332A2",
+        "pubKey": "0xB986AB2343CDD332EE2345FA442776EFAA5663D567E5342FA3232A"
       }
     },
     "Proof": {
@@ -1523,32 +1515,24 @@ func init() {
     "MedicalAttention": {
       "type": "object",
       "properties": {
-        "doctorPublicKey": {
-          "description": "Doctor's hexadecimal public key",
-          "type": "string"
-        },
-        "hashHealthCredential": {
-          "description": "Doctor's Health Credential hash",
-          "type": "string"
-        },
-        "medicalRecord": {
-          "description": "Medical record about this medical appointment",
-          "type": "string"
-        },
-        "patientPublicKey": {
+        "medicalAppointmentID": {
           "description": "Patient's hexadecimal public key",
           "type": "string"
         },
-        "recipe": {
-          "description": "Recipe given by doctor to patient",
+        "publicKey": {
+          "description": "Doctor's PrivateKey",
+          "type": "string"
+        },
+        "recordMedical": {
+          "description": "Record Medical write by doctor",
           "type": "string"
         }
       },
       "example": {
         "date": "2019-08-08T19:23:24Z",
-        "doctorPublicKey": "0xB986AB2343CDD332EE2345FA442776EFAA5663D567E5342FA3232A",
-        "hashCredential": "3c9f6UAYaIJsXUJDIM7lb2+tTW1ukkhnhwzDnC9h9Ksx2UtndRxAhoTyxPPGM",
-        "patientPublicKey": "0xA12543122BB32323AD233D232AEE233232FF87675E23AD23CB092"
+        "medicalAppointmentID": "23456FA",
+        "publicKey": "0xB986AB2343CDD332EE2345FA442776EFAA5663D567E5342FA3232A",
+        "recordMedical": "El paciente necesita descanso medico"
       }
     },
     "NewAppointmentSubject": {
@@ -1572,10 +1556,10 @@ func init() {
         }
       },
       "example": {
-        "date": "2019-08-08T19:23:24Z",
-        "doctorPublicKey": "0xB986AB2343CDD332EE2345FA442776EFAA5663D567E5342FA3232A",
-        "hashCredential": "3c9f6UAYaIJsXUJDIM7lb2+tTW1ukkhnhwzDnC9h9Ksx2UtndRxAhoTyxPPGM",
-        "patientPublicKey": "0xA12543122BB32323AD233D232AEE233232FF87675E23AD23CB092"
+        "comments": "Me duele la cabeza y dolores de estómago",
+        "doctorId": "344BA23F",
+        "patientId": "1F2332A2",
+        "pubKey": "0xB986AB2343CDD332EE2345FA442776EFAA5663D567E5342FA3232A"
       }
     },
     "Proof": {
