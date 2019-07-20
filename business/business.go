@@ -79,6 +79,7 @@ type DoctorAddData struct{
     Name        string          `bson:"name" json:"name" mapstructure:"name"`
     LastName    string          `bson:"lastName" json:"lastName" mapstructure:"lastName"`
     PublicKey   string          `bson:"publicKey" json:"publicKey" mapstructure:"publicKey"`
+    HashCredential  string          `bson:"hashCredential" json:"hashCredential" mapstructure:"hashCredential"`
     Speciality  string          `bosn:"speciality" json:"speciality" mapstructure:"speciality"`  
 }
 
@@ -192,7 +193,7 @@ func CreatePatient(privKey, id string, credentialHealth *models.CredentialSubjec
 }
 
 //CreateDoctor ...
-func CreateDoctor(id string, name string, lastName string, speciality string, privKey string){
+func CreateDoctor(privKey, id string, credentialHealth *models.CredentialSubject)(*models.Credential, error){
     var privateKey, _ = hex.DecodeString(privKey)
     publicKey := make([]byte, 32) 
     copy(publicKey, privateKey[32:])
@@ -200,9 +201,9 @@ func CreateDoctor(id string, name string, lastName string, speciality string, pr
     var doctor DoctorAddData
     doctor.ID = bson.ObjectIdHex(id)
     doctor.IDAccount = id
-    doctor.Name = name
-    doctor.LastName = lastName
-    doctor.Speciality = speciality
+    doctor.Name = getNameSubject(credentialHealth.Content)
+    doctor.LastName = getLastNameSubject(credentialHealth.Content)
+    doctor.Speciality = getSpecialitySubject(credentialHealth.Content)
     doctor.PublicKey = b64.StdEncoding.EncodeToString(publicKey) 
 
     fmt.Println("doctor",doctor)
@@ -224,6 +225,13 @@ func CreateDoctor(id string, name string, lastName string, speciality string, pr
 
     fmt.Println(doctor)
 
+    healthCredential, hashCredential, err := CreateCredential(credentialHealth,"clinica1")
+    if err != nil{
+        fmt.Println("error trantado de generar la credencial")
+    }
+
+    doctor.HashCredential = hashCredential
+
     client := client.NewHTTP("tcp://0.0.0.0:26657", "/websocket")
     result, err := client.BroadcastTxCommit(types.Tx(bs))
     if err != nil{
@@ -231,6 +239,8 @@ func CreateDoctor(id string, name string, lastName string, speciality string, pr
     }
 
     fmt.Println(result)
+
+    return healthCredential, nil
 }
 
 //GenerateKey ...

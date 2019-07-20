@@ -5,6 +5,7 @@ package restapi
 import (
 	"crypto/tls"
 	"net/http"
+	"strings"
 
 	errors "github.com/go-openapi/errors"
 	runtime "github.com/go-openapi/runtime"
@@ -17,6 +18,8 @@ import (
 	"github.com/ccamaleon5/SaludChainClient/restapi/operations/pharmacy"
 
 	"github.com/ccamaleon5/SaludChainClient/business"
+
+	"github.com/rs/cors"
 )
 
 //go:generate swagger generate server --target ../../SaludChainClient --name SaludChainAPIs --spec ../swagger/swaggerui/swagger.json
@@ -57,6 +60,14 @@ func configureAPI(api *operations.SaludChainAPIsAPI) http.Handler {
 			}
 			return insurance.NewCreateHealthCredentialOK().WithPayload(response)
 		})
+
+		api.InsuranceCreateDoctorCredentialHandler = insurance.CreateDoctorCredentialHandlerFunc(func(params insurance.CreateDoctorCredentialParams) middleware.Responder {
+			response, err := business.CreateDoctor(params.PublicKey, params.IDAccount, params.Body)
+			if err != nil {
+				return insurance.NewCreateDoctorCredentialBadRequest()
+			}
+			return insurance.NewCreateDoctorCredentialOK().WithPayload(response)
+		})
 	
 	if api.InsuranceGetHealthCredentialByIDHandler == nil {
 		api.InsuranceGetHealthCredentialByIDHandler = insurance.GetHealthCredentialByIDHandlerFunc(func(params insurance.GetHealthCredentialByIDParams) middleware.Responder {
@@ -88,6 +99,8 @@ func configureAPI(api *operations.SaludChainAPIsAPI) http.Handler {
 
 		return health.NewCreateAccountOK().WithPayload(responseBody)
 	})
+
+	
 
 	if api.InsuranceVerifyHealthCredentialHandler == nil {
 		api.InsuranceVerifyHealthCredentialHandler = insurance.VerifyHealthCredentialHandlerFunc(func(params insurance.VerifyHealthCredentialParams) middleware.Responder {
@@ -126,5 +139,30 @@ func setupMiddlewares(handler http.Handler) http.Handler {
 // The middleware configuration happens before anything, this middleware also applies to serving the swagger.json document.
 // So this is a good place to plug in a panic handling middleware, logging and metrics
 func setupGlobalMiddleware(handler http.Handler) http.Handler {
-	return handler
+
+	corsHandler := cors.New(cors.Options{
+		Debug:          false,
+		AllowedHeaders: []string{"*"},
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{},
+		MaxAge:         1000,
+	})
+	return corsHandler.Handler(uiMiddleware(handler))
+}
+
+func uiMiddleware(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Shortcut helpers for swagger-ui
+		if r.URL.Path == "/swagger-ui" || r.URL.Path == "/api/help" {
+			http.Redirect(w, r, "/swagger-ui/", http.StatusFound)
+			return
+		}
+		// Serving ./swagger-ui/
+		if strings.Index(r.URL.Path, "/swagger-ui/") == 0 {
+			http.StripPrefix("/swagger-ui/", http.FileServer(http.Dir("./swaggerui/"))).ServeHTTP(w, r)
+			return
+		}
+
+		handler.ServeHTTP(w, r)
+	})
 }

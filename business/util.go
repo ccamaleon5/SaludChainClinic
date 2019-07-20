@@ -12,7 +12,14 @@ func getNameSubject(contentSubject interface{}) string {
 
 func getLastNameSubject(contentSubject interface{}) string {
 	content := contentSubject.(map[string]interface{})
-	name := content["lastName"]
+	name := content["lastname"]
+
+	return fmt.Sprintf("%v", name)
+}
+
+func getSpecialitySubject(contentSubject interface{}) string {
+	content := contentSubject.(map[string]interface{})
+	name := content["speciality"]
 
 	return fmt.Sprintf("%v", name)
 }

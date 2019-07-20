@@ -316,6 +316,64 @@ func init() {
         }
       }
     },
+    "/insurance/credential/doctor": {
+      "post": {
+        "description": "This service is responsible for generating health insurance doctor credential, storing the credential hash in the blockchain. You send the credential data with type of credential, range of valid dates and evidence generated about credential as optional",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "insurance"
+        ],
+        "summary": "Create Health Insurance Doctor Credential",
+        "operationId": "createDoctorCredential",
+        "parameters": [
+          {
+            "description": "Created Doctor health credential object",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CredentialSubject"
+            }
+          },
+          {
+            "type": "string",
+            "description": "The Doctor's public key",
+            "name": "publicKey",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Doctor Id Account",
+            "name": "idAccount",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Credential"
+            }
+          },
+          "204": {
+            "description": "Patient doesn't exist"
+          },
+          "400": {
+            "description": "Invalid data supplied"
+          },
+          "500": {
+            "description": "Error Internal Server"
+          }
+        }
+      }
+    },
     "/insurance/credential/{hashCredential}/verify": {
       "get": {
         "description": "This service verify into blockchain if the health credentials are current and these were not revoked",
@@ -971,6 +1029,64 @@ func init() {
           {
             "type": "string",
             "description": "Id Account",
+            "name": "idAccount",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Credential"
+            }
+          },
+          "204": {
+            "description": "Patient doesn't exist"
+          },
+          "400": {
+            "description": "Invalid data supplied"
+          },
+          "500": {
+            "description": "Error Internal Server"
+          }
+        }
+      }
+    },
+    "/insurance/credential/doctor": {
+      "post": {
+        "description": "This service is responsible for generating health insurance doctor credential, storing the credential hash in the blockchain. You send the credential data with type of credential, range of valid dates and evidence generated about credential as optional",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "insurance"
+        ],
+        "summary": "Create Health Insurance Doctor Credential",
+        "operationId": "createDoctorCredential",
+        "parameters": [
+          {
+            "description": "Created Doctor health credential object",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CredentialSubject"
+            }
+          },
+          {
+            "type": "string",
+            "description": "The Doctor's public key",
+            "name": "publicKey",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Doctor Id Account",
             "name": "idAccount",
             "in": "header",
             "required": true

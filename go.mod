@@ -12,6 +12,7 @@ require (
 	github.com/go-openapi/swag v0.19.4
 	github.com/go-openapi/validate v0.19.2
 	github.com/jessevdk/go-flags v1.4.0
+	github.com/rs/cors v1.6.0
 	github.com/segmentio/ksuid v1.0.2
 	github.com/skip2/go-qrcode v0.0.0-20190110000554-dc11ecdae0a9
 	github.com/tendermint/tendermint v0.26.1

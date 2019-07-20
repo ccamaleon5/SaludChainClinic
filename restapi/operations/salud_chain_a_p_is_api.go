@@ -51,6 +51,9 @@ func NewSaludChainAPIsAPI(spec *loads.Document) *SaludChainAPIsAPI {
 		HealthCreateAccountHandler: health.CreateAccountHandlerFunc(func(params health.CreateAccountParams) middleware.Responder {
 			return middleware.NotImplemented("operation HealthCreateAccount has not yet been implemented")
 		}),
+		InsuranceCreateDoctorCredentialHandler: insurance.CreateDoctorCredentialHandlerFunc(func(params insurance.CreateDoctorCredentialParams) middleware.Responder {
+			return middleware.NotImplemented("operation InsuranceCreateDoctorCredential has not yet been implemented")
+		}),
 		InsuranceCreateHealthCredentialHandler: insurance.CreateHealthCredentialHandlerFunc(func(params insurance.CreateHealthCredentialParams) middleware.Responder {
 			return middleware.NotImplemented("operation InsuranceCreateHealthCredential has not yet been implemented")
 		}),
@@ -111,6 +114,8 @@ type SaludChainAPIsAPI struct {
 	ClinicBookMedicalAppointmentHandler clinic.BookMedicalAppointmentHandler
 	// HealthCreateAccountHandler sets the operation handler for the create account operation
 	HealthCreateAccountHandler health.CreateAccountHandler
+	// InsuranceCreateDoctorCredentialHandler sets the operation handler for the create doctor credential operation
+	InsuranceCreateDoctorCredentialHandler insurance.CreateDoctorCredentialHandler
 	// InsuranceCreateHealthCredentialHandler sets the operation handler for the create health credential operation
 	InsuranceCreateHealthCredentialHandler insurance.CreateHealthCredentialHandler
 	// InsuranceGetHealthCredentialByIDHandler sets the operation handler for the get health credential by Id operation
@@ -198,6 +203,10 @@ func (o *SaludChainAPIsAPI) Validate() error {
 
 	if o.HealthCreateAccountHandler == nil {
 		unregistered = append(unregistered, "health.CreateAccountHandler")
+	}
+
+	if o.InsuranceCreateDoctorCredentialHandler == nil {
+		unregistered = append(unregistered, "insurance.CreateDoctorCredentialHandler")
 	}
 
 	if o.InsuranceCreateHealthCredentialHandler == nil {
@@ -340,6 +349,11 @@ func (o *SaludChainAPIsAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/health/account/{publicKey}"] = health.NewCreateAccount(o.context, o.HealthCreateAccountHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/insurance/credential/doctor"] = insurance.NewCreateDoctorCredential(o.context, o.InsuranceCreateDoctorCredentialHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
