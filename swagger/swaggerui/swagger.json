@@ -1,0 +1,679 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is a SaludChain Client that send transactions to SaludChain Blockchain \n\nSaludChain Client exposes APIs to be consume by patients, clinics, insurances, pharmacies and health institutions ",
+    "version": "0.0.1",
+    "title": "SaludChain APIs",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "adriancc5.5@gmail.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "localhost:8000",
+  "basePath": "/v1",
+  "tags": [
+    {
+      "name": "insurance",
+      "description": "Operations about Health Insurances"
+    },
+    {
+      "name": "clinic",
+      "description": "Operations about Clinics"
+    },
+    {
+      "name": "pharmacy",
+      "description": "Operations about Pharmacies"
+    },
+    {
+      "name": "health",
+      "description": "Operations about patient's health"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/insurance/credential/": {
+      "post": {
+        "tags": [
+          "insurance"
+        ],
+        "summary": "Create Health Insurance Credential",
+        "description": "This service is responsible for generating health insurance credential, storing the credential hash in the blockchain. You send the credential data with type of credential, range of valid dates and evidence generated about credential as optional",
+        "operationId": "createHealthCredential",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Created health credential object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CredentialSubject"
+            }
+          },
+          {
+            "in": "header",
+            "name": "publicKey",
+            "required": true,
+            "type": "string",
+            "description": "The Patient's public key"
+          },
+          {
+            "in": "header",
+            "name": "idAccount",
+            "required": true,
+            "type": "string",
+            "description": "Id Account"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Credential"
+            }
+          },
+          "204": {
+            "description": "Patient doesn't exist"
+          },
+          "400": {
+            "description": "Invalid data supplied"
+          },
+          "500": {
+            "description": "Error Internal Server"
+          }
+        }
+      }
+    },
+    "/insurance/credential/{publicKey}": {
+      "get": {
+        "tags": [
+          "insurance"
+        ],
+        "summary": "Get a Credential by Digital Identity",
+        "description": "This service returns a health credential verifiable",
+        "operationId": "getHealthCredentialById",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "publicKey",
+            "type": "string",
+            "description": "the patient's digital identity public key.",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Credential"
+            }
+          },
+          "400": {
+            "description": "Invalid credential Id supplied"
+          },
+          "404": {
+            "description": "ID not found"
+          },
+          "500": {
+            "description": "Error Internal Server"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "insurance"
+        ],
+        "summary": "Revoke a health credential",
+        "description": "This service revokes a health credential in the credential revocation list(SaludChain) providing a publicKey",
+        "operationId": "revokeCredential",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "publicKey",
+            "description": "Patient's PublicKey to revoke",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "invalid publicKey supplied"
+          },
+          "404": {
+            "description": "health credential doens't exist"
+          },
+          "500": {
+            "description": "error Internal Server"
+          }
+        }
+      }
+    },
+    "/insurance/credential/{hashCredential}/verify": {
+      "get": {
+        "tags": [
+          "insurance"
+        ],
+        "summary": "Verify a health credential",
+        "description": "This service verify into blockchain if the health credentials are current and these were not revoked",
+        "operationId": "verifyHealthCredential",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "hashCredential",
+            "description": "the hashCredential that should be validated",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "invalid health credential supplied"
+          },
+          "404": {
+            "description": "health credential doens't exist"
+          },
+          "500": {
+            "description": "error internal server"
+          }
+        }
+      }
+    },
+    "/clinic/medicalappointment": {
+      "post": {
+        "tags": [
+          "clinic"
+        ],
+        "summary": "Create Medical Appointment",
+        "description": "This service is responsible for book a medical appointment, that through multi signature contract, how proof blockchain generates a credential about this contract to share information with clinic",
+        "operationId": "bookMedicalAppointment",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Created health credential object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AppointmentSubject"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Credential"
+            }
+          },
+          "400": {
+            "description": "Invalid data supplied"
+          },
+          "404": {
+            "description": "Resource doesn't exist"
+          },
+          "500": {
+            "description": "Error Internal Server"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "clinic"
+        ],
+        "summary": "Update Medical Appointment",
+        "description": "This service is responsible for book a medical appointment, that through multi signature contract, how proof blockchain generates a credential about this contract to share information with clinic",
+        "operationId": "setMedicalAttention",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Created health credential object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MedicalAttention"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Credential"
+            }
+          },
+          "400": {
+            "description": "Invalid data supplied"
+          },
+          "404": {
+            "description": "Resource doesn't exist"
+          },
+          "500": {
+            "description": "Error Internal Server"
+          }
+        }
+      }
+    },
+    "/pharmacy/recipe/{hashRecipe}/verify": {
+      "get": {
+        "tags": [
+          "pharmacy"
+        ],
+        "summary": "Verify Patient's recipe",
+        "description": "This service is responsible for verify a recipe given by Doctor in Pharmacy",
+        "operationId": "verifyRecipe",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "hashRecipe",
+            "description": "the hashCredential that should be validated",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "invalid hash recipe supplied"
+          },
+          "404": {
+            "description": "health credential doens't exist"
+          },
+          "500": {
+            "description": "error internal server"
+          }
+        }
+      }
+    },
+    "/health/patient/medicalrecord/share": {
+      "post": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Share Patient's medical record",
+        "description": "This service is responsible to share medical record with other entity o member that exist in SaludChain ecosystem",
+        "operationId": "shareMedicalRecord",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Medical Record Shared",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AppointmentSubject"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Credential"
+            }
+          },
+          "400": {
+            "description": "Invalid data supplied"
+          },
+          "404": {
+            "description": "Resource doesn't exist"
+          },
+          "500": {
+            "description": "Error Internal Server"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Revoke sharing medical information",
+        "description": "This service is responsible for remove a medical record shared",
+        "operationId": "Remove Record Shared",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Medical Record Shared",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MedicalAttention"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Credential"
+            }
+          },
+          "400": {
+            "description": "Invalid data supplied"
+          },
+          "404": {
+            "description": "Resource doesn't exist"
+          },
+          "500": {
+            "description": "Error Internal Server"
+          }
+        }
+      }
+    },
+    "/health/account/{publicKey}": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Create Digital Account",
+        "description": "This service is responsible to create digital identity patient",
+        "operationId": "createAccount",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "publicKey",
+            "description": "The publicKey of digital account",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "The Account ID."
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid data supplied"
+          },
+          "404": {
+            "description": "Resource doesn't exist"
+          },
+          "500": {
+            "description": "Error Internal Server"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Proof": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Sign Algorithm",
+          "enum": [
+            "SmartContract",
+            "RSASignature",
+            "Secp256k1",
+            "Secp256r1"
+          ]
+        },
+        "created": {
+          "type": "string",
+          "description": "The date of the digital signature with format YYYY-MM-DDTHH:MM:SSZ",
+          "format": "date-time"
+        },
+        "verificationMethod": {
+          "type": "string",
+          "description": "The method to proof if a credential is valid. The methods can include smart contracts, public keys"
+        },
+        "signatureValue": {
+          "type": "string",
+          "description": "the digital signature of credential provider"
+        }
+      },
+      "xml": {
+        "name": "Proof"
+      }
+    },
+    "AppointmentSubject": {
+      "type": "object",
+      "properties": {
+        "hashHealthCredential": {
+          "type": "string",
+          "description": "Health Credential's hash"
+        },
+        "patientPublicKey": {
+          "type": "string",
+          "description": "Patient's hexadecimal public key"
+        },
+        "doctorPublicKey": {
+          "type": "string",
+          "description": "Doctor's hexadecimal public key"
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "appointment date"
+        }
+      },
+      "example": {
+        "hashCredential": "3c9f6UAYaIJsXUJDIM7lb2+tTW1ukkhnhwzDnC9h9Ksx2UtndRxAhoTyxPPGM",
+        "patientPublicKey": "0xA12543122BB32323AD233D232AEE233232FF87675E23AD23CB092",
+        "doctorPublicKey": "0xB986AB2343CDD332EE2345FA442776EFAA5663D567E5342FA3232A",
+        "date": "2019-08-08T19:23:24Z"
+      }
+    },
+    "MedicalAttention": {
+      "type": "object",
+      "properties": {
+        "hashHealthCredential": {
+          "type": "string",
+          "description": "Doctor's Health Credential hash"
+        },
+        "patientPublicKey": {
+          "type": "string",
+          "description": "Patient's hexadecimal public key"
+        },
+        "doctorPublicKey": {
+          "type": "string",
+          "description": "Doctor's hexadecimal public key"
+        },
+        "medicalRecord": {
+          "type": "string",
+          "description": "Medical record about this medical appointment"
+        },
+        "recipe": {
+          "type": "string",
+          "description": "Recipe given by doctor to patient"
+        }
+      },
+      "example": {
+        "hashCredential": "3c9f6UAYaIJsXUJDIM7lb2+tTW1ukkhnhwzDnC9h9Ksx2UtndRxAhoTyxPPGM",
+        "patientPublicKey": "0xA12543122BB32323AD233D232AEE233232FF87675E23AD23CB092",
+        "doctorPublicKey": "0xB986AB2343CDD332EE2345FA442776EFAA5663D567E5342FA3232A",
+        "date": "2019-08-08T19:23:24Z"
+      }
+    },
+    "CredentialSubject": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Credential Type"
+        },
+        "issuanceDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "credential issuance date"
+        },
+        "expirationDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "credential expiration date"
+        },
+        "content": {
+          "description": "The claims that will be generated with the credential"
+        },
+        "evidence": {
+          "description": "The evidence obtained from the validation of the claims, may be photos, physical documents, links, etc"
+        }
+      },
+      "example": {
+        "type": "DNI",
+        "issuanceDate": "2019-01-01T19:23:24Z",
+        "expirationDate": "2022-01-01T19:23:24Z",
+        "content": {
+          "name": "Jose",
+          "lastname": "Perez",
+          "birthDate": "1990-01-01"
+        },
+        "evidence": {
+          "photoFrontDNI": "3c9f6UAYaIJsXUJDIM7lb2+tTW1ukkhnhwzDnC9h9Ksx2UtndRxAhoTyxPPGM/rWfcW8duzT6dIY9zHoSSB1/L2oMmrs//9k=",
+          "photoBackDNI": "DnC9h9Ksx2UtndRxAhoTyxPPGM/rWfcW8dunC9h9Ksx2UtndRxAhoTyxPPGM/rWfcW8duzT6dIY9zHoSSB1/L2oMmrs/w4l=",
+          "face": "W8duzeDnC9h9Ksx2UtndRT6dIY9zHoSSB1/L2oMmrs//7k="
+        }
+      }
+    },
+    "Credential": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "credentialSubject",
+        "proof"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The credential ID generated by the Provider Credential"
+        },
+        "type": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The types of this credential"
+        },
+        "issuer": {
+          "type": "string",
+          "description": "The DID or identity of Provider Credential"
+        },
+        "issuanceDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "credential issuance date"
+        },
+        "credentialSubject": {
+          "description": "The claims about a DID or identity that will be signed by Credential Provider"
+        },
+        "evidence": {
+          "description": "The evidence obtained from the validation of the claims, may be photos, physical documents, links, etc"
+        },
+        "proof": {
+          "$ref": "#/definitions/Proof"
+        }
+      },
+      "example": {
+        "id": "http://example.edu/credentials/3732",
+        "type": [
+          "VerifiableCredential",
+          "HealthCredential"
+        ],
+        "issuer": "did:eth:MIN12345",
+        "issuanceDate": "2010-01-01T19:23:24Z",
+        "expirationDate": "2020-01-01T19:23:24Z",
+        "credentialSubject": {
+          "name": "Jose",
+          "lastname": "Perez",
+          "birthDate": "1990-01-01",
+          "title": "patient"
+        },
+        "evidence": {
+          "photoFrontDNI": "3c9f6UAYaIJsXUJDIM7lb2+tTW1ukkhnhwzDnC9h9Ksx2UtndRxAhoTyxPPGM/rWfcW8duzT6dIY9zHoSSB1/L2oMmrs//9k=",
+          "photoBackDNI": "DnC9h9Ksx2UtndRxAhoTyxPPGM/rWfcW8dunC9h9Ksx2UtndRxAhoTyxPPGM/rWfcW8duzT6dIY9zHoSSB1/L2oMmrs/w4l=",
+          "face": "W8duzeDnC9h9Ksx2UtndRT6dIY9zHoSSB1/L2oMmrs//7k="
+        },
+        "proof": {
+          "type": "Secp256k1",
+          "created": "2018-06-18T21:19:10Z",
+          "verificationMethod": "a12345df12ba123abcdf1298765f",
+          "signatureValue": "BavEll0/I1zpYw8XNi1bgVg/sCneO4Jugez8RwDg/+MCRVpjOboDoe4SxxKjkCOvKiCHGDvc4krqi6Z1n0UfqzxGfmatCuFibcC1wpsPRdW+gGsutPTLzvueMWmFhwYmfIFpbBu95t501+rSLHIEuujM/+PXr9Cky6Ed+W3JT24="
+        }
+      },
+      "xml": {
+        "name": "Credential"
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}
