@@ -297,12 +297,17 @@ func NewMedicalAppointment(patientID string, doctorID string, privKey string, co
 
     fmt.Println(medicalAppointment)
 
-    //credentialHealth :=  &models.CredentialSubject{Content: {"name":"asd"}, ExpirationDate}
+    var content map[string]interface{}
+    jsonContent := `{"patient":"pepito","doctor":"luisito"}`
+	// Unmarshal or Decode the JSON to the interface.
+    json.Unmarshal([]byte(jsonContent), &content)
 
-    //healthCredential, hashCredential, err := CreateCredential(credentialHealth,"clinica1")
-    //if err != nil{
-     //   fmt.Println("error trantado de generar la credencial")
-    //}
+    credentialHealth :=  &models.CredentialSubject{Type:"MedicalAppointment",Content: content, ExpirationDate:strfmt.DateTime(time.Now()), IssuanceDate:strfmt.DateTime(time.Now())}
+
+    _, hashCredential, err := CreateCredential(credentialHealth,"clinica1")
+    if err != nil{
+        fmt.Println("error trantado de generar la credencial")
+    }
 
     client := client.NewHTTP("tcp://0.0.0.0:26657", "/websocket")
     result, err := client.BroadcastTxCommit(types.Tx(bs))
@@ -312,7 +317,7 @@ func NewMedicalAppointment(patientID string, doctorID string, privKey string, co
 
     fmt.Println(result)
 
-    return "hashreturn", nil 
+    return hashCredential, nil 
 }
 
 func callRPC(txBody TxBody, pubKey string, privKey string){
