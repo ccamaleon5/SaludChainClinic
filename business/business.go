@@ -263,7 +263,7 @@ func byteToHex(input []byte) string {
 }
 
 //NewMedicalAppointment ...
-func NewMedicalAppointment(patientID string, doctorID string, privKey string, comments string){
+func NewMedicalAppointment(patientID string, doctorID string, privKey string, comments string) (string, error){
     var privateKey, _ = hex.DecodeString(privKey)
     publicKey := make([]byte, 32) 
     copy(publicKey, privateKey[32:])
@@ -297,6 +297,13 @@ func NewMedicalAppointment(patientID string, doctorID string, privKey string, co
 
     fmt.Println(medicalAppointment)
 
+    //credentialHealth :=  &models.CredentialSubject{Content: {"name":"asd"}, ExpirationDate}
+
+    //healthCredential, hashCredential, err := CreateCredential(credentialHealth,"clinica1")
+    //if err != nil{
+     //   fmt.Println("error trantado de generar la credencial")
+    //}
+
     client := client.NewHTTP("tcp://0.0.0.0:26657", "/websocket")
     result, err := client.BroadcastTxCommit(types.Tx(bs))
     if err != nil{
@@ -304,6 +311,8 @@ func NewMedicalAppointment(patientID string, doctorID string, privKey string, co
     }
 
     fmt.Println(result)
+
+    return "hashreturn", nil 
 }
 
 func callRPC(txBody TxBody, pubKey string, privKey string){

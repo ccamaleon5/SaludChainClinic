@@ -53,6 +53,15 @@ func configureAPI(api *operations.SaludChainAPIsAPI) http.Handler {
 		})
 	}
 
+	api.ClinicBookNewMedicalAppointmentHandler = clinic.BookNewMedicalAppointmentHandlerFunc(func(params clinic.BookNewMedicalAppointmentParams) middleware.Responder {
+		_, err := business.NewMedicalAppointment(params.Body.PatientID, params.Body.DoctorID, params.Body.PubKey, params.Body.Comments)
+		if err != nil {
+			return clinic.NewBookNewMedicalAppointmentBadRequest()
+		}
+
+		return clinic.NewBookNewMedicalAppointmentOK()
+	})
+
 		api.InsuranceCreateHealthCredentialHandler = insurance.CreateHealthCredentialHandlerFunc(func(params insurance.CreateHealthCredentialParams) middleware.Responder {
 			response, err := business.CreatePatient(params.PublicKey, params.IDAccount, params.Body)
 			if err != nil {

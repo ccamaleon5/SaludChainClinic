@@ -124,6 +124,50 @@ func init() {
         }
       }
     },
+    "/clinic/medicalappointment/create": {
+      "post": {
+        "description": "This service is responsible for book a medical appointment, that through multi signature contract, how proof blockchain generates a credential about this contract to share information with clinic",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "clinic"
+        ],
+        "summary": "Create New Medical Appointment",
+        "operationId": "bookNewMedicalAppointment",
+        "parameters": [
+          {
+            "description": "Created health credential object",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewAppointmentSubject"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Credential"
+            }
+          },
+          "400": {
+            "description": "Invalid data supplied"
+          },
+          "404": {
+            "description": "Resource doesn't exist"
+          },
+          "500": {
+            "description": "Error Internal Server"
+          }
+        }
+      }
+    },
     "/health/account/{publicKey}": {
       "get": {
         "description": "This service is responsible to create digital identity patient",
@@ -689,6 +733,33 @@ func init() {
         },
         "recipe": {
           "description": "Recipe given by doctor to patient",
+          "type": "string"
+        }
+      },
+      "example": {
+        "date": "2019-08-08T19:23:24Z",
+        "doctorPublicKey": "0xB986AB2343CDD332EE2345FA442776EFAA5663D567E5342FA3232A",
+        "hashCredential": "3c9f6UAYaIJsXUJDIM7lb2+tTW1ukkhnhwzDnC9h9Ksx2UtndRxAhoTyxPPGM",
+        "patientPublicKey": "0xA12543122BB32323AD233D232AEE233232FF87675E23AD23CB092"
+      }
+    },
+    "NewAppointmentSubject": {
+      "type": "object",
+      "properties": {
+        "comments": {
+          "description": "appointment date",
+          "type": "string"
+        },
+        "doctorId": {
+          "description": "Doctor ID",
+          "type": "string"
+        },
+        "patientId": {
+          "description": "Patient ID",
+          "type": "string"
+        },
+        "pubKey": {
+          "description": "Patient PubKey",
           "type": "string"
         }
       },
@@ -861,6 +932,50 @@ func init() {
         }
       }
     },
+    "/clinic/medicalappointment/create": {
+      "post": {
+        "description": "This service is responsible for book a medical appointment, that through multi signature contract, how proof blockchain generates a credential about this contract to share information with clinic",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "clinic"
+        ],
+        "summary": "Create New Medical Appointment",
+        "operationId": "bookNewMedicalAppointment",
+        "parameters": [
+          {
+            "description": "Created health credential object",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewAppointmentSubject"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Credential"
+            }
+          },
+          "400": {
+            "description": "Invalid data supplied"
+          },
+          "404": {
+            "description": "Resource doesn't exist"
+          },
+          "500": {
+            "description": "Error Internal Server"
+          }
+        }
+      }
+    },
     "/health/account/{publicKey}": {
       "get": {
         "description": "This service is responsible to create digital identity patient",
@@ -1426,6 +1541,33 @@ func init() {
         },
         "recipe": {
           "description": "Recipe given by doctor to patient",
+          "type": "string"
+        }
+      },
+      "example": {
+        "date": "2019-08-08T19:23:24Z",
+        "doctorPublicKey": "0xB986AB2343CDD332EE2345FA442776EFAA5663D567E5342FA3232A",
+        "hashCredential": "3c9f6UAYaIJsXUJDIM7lb2+tTW1ukkhnhwzDnC9h9Ksx2UtndRxAhoTyxPPGM",
+        "patientPublicKey": "0xA12543122BB32323AD233D232AEE233232FF87675E23AD23CB092"
+      }
+    },
+    "NewAppointmentSubject": {
+      "type": "object",
+      "properties": {
+        "comments": {
+          "description": "appointment date",
+          "type": "string"
+        },
+        "doctorId": {
+          "description": "Doctor ID",
+          "type": "string"
+        },
+        "patientId": {
+          "description": "Patient ID",
+          "type": "string"
+        },
+        "pubKey": {
+          "description": "Patient PubKey",
           "type": "string"
         }
       },
